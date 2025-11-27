@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "metaping"
+description = "Advanced host availability checker"
+version = "0.1"
+requires-python = ">= 3.8"
+license = "GPL-3.0-only"
+authors = [{name = "usiqwerty"}]
+maintainers = [{name = "usiqwerty"}]
+
+[project.scripts]
+metaping = "metaping.cli:run_cli"
