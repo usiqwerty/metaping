@@ -2,7 +2,7 @@ from metaping.astatus import AvailabilityStatus
 from metaping.ping import ping
 
 
-def ping_status(host: str):
+def scan_ping(host: str):
     r = ping(host)
     if r is None:
         return AvailabilityStatus.Fallback

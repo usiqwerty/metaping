@@ -1,26 +1,28 @@
+from typing import Iterable, Callable
+
 from metaping.astatus import AvailabilityStatus
-from metaping.http_checker import scan_http_s
-from metaping.ping_checker import ping_status
+from metaping.checkers.http import scan_http_s
+from metaping.checkers.icmp import scan_ping
 
 
-def _try_all_methods(*funcs, domain: str) -> AvailabilityStatus:
+def __try_all_methods(funcs: Iterable[Callable], host: str) -> AvailabilityStatus:
     for func in funcs:
-        st = func(domain)
+        st = func(host)
         if st != AvailabilityStatus.Fallback:
             return st
 
 
-def scan_host(domain: str) -> AvailabilityStatus:
-    return _try_all_methods(
+def scan_host(host: str) -> AvailabilityStatus:
+    methods = [
         lambda d: scan_http_s(f"https://{d}/"),
         lambda d: scan_http_s(f"http://{d}/"),
-        ping_status,
+        scan_ping,
         lambda x: AvailabilityStatus.Down,
-        domain=domain
-    )
+    ]
+    return __try_all_methods(methods, host=host)
 
 
-def batch_scan(domains: list[str]):
-    for d in domains:
-        domain_status = scan_host(d)
-        print(f"{d} [{domain_status.name}]")
+def batch_scan(hosts: list[str]):
+    for host in hosts:
+        domain_status = scan_host(host)
+        print(f"{host} [{domain_status.name}]")
